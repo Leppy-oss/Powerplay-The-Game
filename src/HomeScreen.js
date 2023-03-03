@@ -8,6 +8,7 @@ export default class HomeScreen extends Phaser.Scene {
     speed = 50;
     junctionBodies;
     robotBodies;
+    robotIntakeBodies;
 
     junctions = [
         //y value -this.FIELD_DIMENSION * 2.0/3.0
@@ -56,6 +57,7 @@ export default class HomeScreen extends Phaser.Scene {
         this.load.image('redlight', '/robots/RedLightRobot.png');
         this.load.image('bluelight', '/robots/BlueLightRobot.png');
         this.load.image('junction', '/junction.png');
+        this.load.image('linearslide', '/linearSlide.png');
     }
 
     create() {
@@ -77,6 +79,7 @@ export default class HomeScreen extends Phaser.Scene {
         let junctionScale = 0.1;
         this.junctionBodies = this.physics.add.staticGroup();
         this.robotBodies = this.physics.add.group();
+        this.robotIntakeBodies = this.physics.add.group();
         // this.junctionBodies.enableBody = true;
         // this.physics.add.staticGroup();
 
@@ -96,25 +99,29 @@ export default class HomeScreen extends Phaser.Scene {
         });
 
         this.robots.forEach(robot => {
-            const emitter = (robot.alliance == 'BLUE'? redParticles : blueParticles).createEmitter({
+            const emitter = (robot.alliance == 'BLUE' ? redParticles : blueParticles).createEmitter({
                 speed: 50,
                 scale: { start: 0.5, end: 0 },
                 blendMode: 'ADD',
             });
             robot.width *= this.FIELD_DIMENSION / 6 / 12;
             robot.height *= this.FIELD_DIMENSION / 6 / 12;
+            let slideObject = this.robotIntakeBodies.create(robot.x, robot.y, 'linearslide').setScale(this.FIELD_DIMENSION / 12 * 3 / 1920, this.FIELD_DIMENSION / 12 * 3 / 1920);
             let phaserObject = this.robotBodies.create(robot.x, robot.y, robot.alliance == 'RED' ? 'redlight' : 'bluelight').setScale(robot.width / 192, robot.height / 192).refreshBody(); // this.add.rectangle(robot.x, robot.y, robot.width, robot.height, robot.alliance == "RED" ? 0xFF0000 : 0x0000FF, 0.5);
             phaserObject.setBounce(0.1);
             phaserObject.setCollideWorldBounds(true);
             phaserObject.setDrag(robot.friction, robot.friction);
-            phaserObject.setFriction(robot.friction/2, robot.friction/2);
+            phaserObject.setFriction(robot.friction / 2, robot.friction / 2);
             phaserObject.setMaxVelocity(robot.speedCap, robot.speedCap);
             phaserObject.setMass(robot.mass);
+            phaserObject.setAngularDrag(robot.friction);
             robot.setPhaserObject(phaserObject);
+            robot.slideObject = slideObject;
             emitter.startFollow(robot.phaserObject);
         });
         this.physics.add.collider(this.robotBodies, this.junctionBodies);
         this.physics.add.collider(this.robotBodies, this.robotBodies);
+        // this.physics.add.collider(this.robotBodies, this.junctionBodies, () => console.log("collided into a junction!"), () => true);
 
         // logo.setDepth(1);
 
@@ -124,11 +131,12 @@ export default class HomeScreen extends Phaser.Scene {
         let cursors = this.input.keyboard.createCursorKeys();
         let robotP1 = this.robots[0].phaserObject;
         robotP1.setAcceleration(0, 0);
+        robotP1.setAngularAcceleration(0);
         if (cursors.left.isDown) robotP1.setAccelerationX(-this.robots[0].acc);
         if (cursors.right.isDown) robotP1.setAccelerationX(this.robots[0].acc);
         if (cursors.down.isDown) robotP1.setAccelerationY(this.robots[0].acc);
         if (cursors.up.isDown) robotP1.setAccelerationY(-this.robots[0].acc);
-        if (cursors.space.isDown) robotP1.setAngularVelocity(5);
+        if (cursors.space.isDown) robotP1.setAngularAcceleration(this.robots[0].acc / 2);
         for (let i = 0; i < this.junctions.length; i++) this.junctions[i].update(time, delta);
         // for (let i = 0; i < this.robots.length; i++) this.robots[i].update(time, delta);
         // console.log(this.robots[0].dx, this.robots[0].dy);

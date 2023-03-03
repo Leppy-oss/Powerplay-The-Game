@@ -13,6 +13,7 @@
 		"vite": "^3.2.5"
 	},
 	"dependencies": {
+		"kill-port": "^2.0.1",
 		"phaser": "^3.55.2"
 	}
 }

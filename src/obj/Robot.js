@@ -5,6 +5,7 @@ export default class Robot {
     width;
     height;
     phaserObject;
+    slideObject;
     alliance;
     acc = 1000;
     friction = 250;
@@ -24,6 +25,5 @@ export default class Robot {
         this.phaserObject = phaserObject;
     }
 
-    update(time, delta) {
-    }
+    update(time, delta) {}
 }
