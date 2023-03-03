@@ -1,17 +1,17 @@
 import Phaser from 'phaser'
 
 import HomeScreen from './HomeScreen'
+import { GameDimensions } from './HomeScreen';
 
 const config = {
     type: Phaser.AUTO,
     parent: 'app',
-    width: 600,
-    height: 600,
+    width: GameDimensions[0],
+    height: GameDimensions[1],
     physics: {
         default: 'arcade',
     },
     scene: [HomeScreen],
 }
 
-export var GameDimensions = [config.width, config.height];
 export default new Phaser.Game(config)

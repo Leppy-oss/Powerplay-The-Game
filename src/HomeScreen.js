@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import Junction from './obj/Junction';
-import Robot from './obj/Robot'
+import Bobot from './obj/Bobot'
 import { JunctionType } from './obj/JunctionType';
+import Robot from './obj/Robot';
 
 export default class HomeScreen extends Phaser.Scene {
     FIELD_DIMENSION = 300;
@@ -9,6 +10,7 @@ export default class HomeScreen extends Phaser.Scene {
     junctionBodies;
     robotBodies;
     robotIntakeBodies;
+    robtob;
 
     junctions = [
         //y value -this.FIELD_DIMENSION * 2.0/3.0
@@ -62,10 +64,10 @@ export default class HomeScreen extends Phaser.Scene {
 
     create() {
         this.robots = [
-            new Robot(0, this.FIELD_DIMENSION / 2, this.FIELD_DIMENSION / 6, 12, 12, "BLUE"),
-            new Robot(0, this.FIELD_DIMENSION / 2, 11 * this.FIELD_DIMENSION / 6, 12, 12, "RED"),
-            new Robot(0, 3 * this.FIELD_DIMENSION / 2, this.FIELD_DIMENSION / 6, 12, 12, "BLUE"),
-            new Robot(0, 3 * this.FIELD_DIMENSION / 2, 11 * this.FIELD_DIMENSION / 6, 12, 12, "RED")
+            new Bobot(0, this.FIELD_DIMENSION / 2, this.FIELD_DIMENSION / 6, 12, 12, "BLUE"),
+            new Bobot(0, this.FIELD_DIMENSION / 2, 11 * this.FIELD_DIMENSION / 6, 12, 12, "RED"),
+            new Bobot(0, 3 * this.FIELD_DIMENSION / 2, this.FIELD_DIMENSION / 6, 12, 12, "BLUE"),
+            new Bobot(0, 3 * this.FIELD_DIMENSION / 2, 11 * this.FIELD_DIMENSION / 6, 12, 12, "RED")
         ];
 
         this.add.image(this.FIELD_DIMENSION, this.FIELD_DIMENSION, 'sky').setScale(2 * this.FIELD_DIMENSION / 2270, 2 * this.FIELD_DIMENSION / 2270).setAlpha(0.5);
@@ -95,7 +97,6 @@ export default class HomeScreen extends Phaser.Scene {
             let phaserObject = this.junctionBodies.create(junction.x, junction.y, 'junction').setScale(junctionScale).refreshBody();
             phaserObject.body.setCircle(9.6);
             junction.setPhaserObject(phaserObject);
-            console.log("Created a new junction at (" + Math.round(junction.x) + ", " + Math.round(junction.y) + ") with type " + junction.type[2] + " and " + junction.cones + " cones.");
         });
 
         this.robots.forEach(robot => {
@@ -121,6 +122,7 @@ export default class HomeScreen extends Phaser.Scene {
         });
         this.physics.add.collider(this.robotBodies, this.junctionBodies);
         this.physics.add.collider(this.robotBodies, this.robotBodies);
+        this.robtob = new Robot(0, this, 'RED');
         // this.physics.add.collider(this.robotBodies, this.junctionBodies, () => console.log("collided into a junction!"), () => true);
 
         // logo.setDepth(1);
@@ -129,16 +131,18 @@ export default class HomeScreen extends Phaser.Scene {
 
     update(time, delta) {
         let cursors = this.input.keyboard.createCursorKeys();
-        let robotP1 = this.robots[0].phaserObject;
-        robotP1.setAcceleration(0, 0);
-        robotP1.setAngularAcceleration(0);
-        if (cursors.left.isDown) robotP1.setAccelerationX(-this.robots[0].acc);
-        if (cursors.right.isDown) robotP1.setAccelerationX(this.robots[0].acc);
-        if (cursors.down.isDown) robotP1.setAccelerationY(this.robots[0].acc);
-        if (cursors.up.isDown) robotP1.setAccelerationY(-this.robots[0].acc);
-        if (cursors.space.isDown) robotP1.setAngularAcceleration(this.robots[0].acc / 2);
+        let robtob = this.robtob;
+        robtob.chassis.setAcceleration(0, 0);
+        robtob.chassis.setAngularAcceleration(0);
+        if (cursors.left.isDown) robtob.chassis.setAccelerationX(-this.robots[0].acc);
+        if (cursors.right.isDown) robtob.chassis.setAccelerationX(this.robots[0].acc);
+        if (cursors.down.isDown) robtob.chassis.setAccelerationY(this.robots[0].acc);
+        if (cursors.up.isDown) robtob.chassis.setAccelerationY(-this.robots[0].acc);
+        if (cursors.space.isDown) robtob.chassis.setAngularAcceleration(this.robots[0].acc / 2);
+        this.robtob.update();
         for (let i = 0; i < this.junctions.length; i++) this.junctions[i].update(time, delta);
         // for (let i = 0; i < this.robots.length; i++) this.robots[i].update(time, delta);
-        // console.log(this.robots[0].dx, this.robots[0].dy);
     }
 }
+
+export var GameDimensions = [600, 600];
