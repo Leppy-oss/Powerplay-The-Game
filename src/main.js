@@ -9,7 +9,10 @@ const config = {
     width: GameDimensions[0],
     height: GameDimensions[1],
     physics: {
-        default: 'arcade',
+        default: 'matter',
+        matter: {
+            debug: true
+        },
     },
     scene: [HomeScreen],
 }

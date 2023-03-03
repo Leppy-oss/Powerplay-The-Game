@@ -63,6 +63,10 @@ export default class HomeScreen extends Phaser.Scene {
     }
 
     create() {
+        this.add.image(this.FIELD_DIMENSION, this.FIELD_DIMENSION, 'sky').setScale(2 * this.FIELD_DIMENSION / 2270, 2 * this.FIELD_DIMENSION / 2270).setAlpha(0.5);
+        this.matter.world.setGravity(0, 0);
+        this.matter.world.setBounds(0, 0, GameDimensions[0], GameDimensions[1]);
+        /*
         this.robots = [
             new Bobot(0, this.FIELD_DIMENSION / 2, this.FIELD_DIMENSION / 6, 12, 12, "BLUE"),
             new Bobot(0, this.FIELD_DIMENSION / 2, 11 * this.FIELD_DIMENSION / 6, 12, 12, "RED"),
@@ -70,18 +74,17 @@ export default class HomeScreen extends Phaser.Scene {
             new Bobot(0, 3 * this.FIELD_DIMENSION / 2, 11 * this.FIELD_DIMENSION / 6, 12, 12, "RED")
         ];
 
-        this.add.image(this.FIELD_DIMENSION, this.FIELD_DIMENSION, 'sky').setScale(2 * this.FIELD_DIMENSION / 2270, 2 * this.FIELD_DIMENSION / 2270).setAlpha(0.5);
-
         const redParticles = this.add.particles('red');
         const blueParticles = this.add.particles('blue');
+        */
 
         // const logo = this.physics.add.image(this.FIELD_DIMENSION, this.FIELD_DIMENSION / 3, 'logo').setScale(0.5, 0.5);
 
         // let logoScl = 2;
-        let junctionScale = 0.1;
-        this.junctionBodies = this.physics.add.staticGroup();
-        this.robotBodies = this.physics.add.group();
-        this.robotIntakeBodies = this.physics.add.group();
+        // let junctionScale = 0.1;
+        // this.junctionBodies = this.physics.add.staticGroup();
+        // this.robotBodies = this.physics.add.group();
+        // this.robotIntakeBodies = this.physics.add.group();
         // this.junctionBodies.enableBody = true;
         // this.physics.add.staticGroup();
 
@@ -91,6 +94,7 @@ export default class HomeScreen extends Phaser.Scene {
         logo.setCollideWorldBounds(true);
         */
 
+        /*
         this.junctions.forEach(junction => {
             junction.x += this.FIELD_DIMENSION;
             junction.y += this.FIELD_DIMENSION;
@@ -122,23 +126,32 @@ export default class HomeScreen extends Phaser.Scene {
         });
         this.physics.add.collider(this.robotBodies, this.junctionBodies);
         this.physics.add.collider(this.robotBodies, this.robotBodies);
-        this.robtob = new Robot(0, this, 'RED');
+        this.physics.add.collider(this.robtob.slide, this.junctionBodies, () => console.log("colliin sloidge"));
+        this.physics.add.collider(this.junctionBodies, this.robtob.chassis, () => console.log("colliin robtob"));
+        */
         // this.physics.add.collider(this.robotBodies, this.junctionBodies, () => console.log("collided into a junction!"), () => true);
 
         // logo.setDepth(1);
-
+        this.robtob = new Robot(0, this, 'RED');
     }
 
     update(time, delta) {
         let cursors = this.input.keyboard.createCursorKeys();
         let robtob = this.robtob;
-        robtob.chassis.setAcceleration(0, 0);
-        robtob.chassis.setAngularAcceleration(0);
-        if (cursors.left.isDown) robtob.chassis.setAccelerationX(-this.robots[0].acc);
+        // robtob.chassis.setAcceleration(0, 0);
+        // robtob.chassis.setAngularAcceleration(0);
+        if (cursors.left.isDown) robtob.chassis.applyForce(new Phaser.Math.Vector2(-1, 0));
+        if (cursors.right.isDown) robtob.chassis.applyForce(new Phaser.Math.Vector2(1, 0));
+        if (cursors.down.isDown) robtob.chassis.applyForce(new Phaser.Math.Vector2(0, 1));
+        if (cursors.up.isDown) robtob.chassis.applyForce(new Phaser.Math.Vector2(0, -1));
+        /*
         if (cursors.right.isDown) robtob.chassis.setAccelerationX(this.robots[0].acc);
         if (cursors.down.isDown) robtob.chassis.setAccelerationY(this.robots[0].acc);
         if (cursors.up.isDown) robtob.chassis.setAccelerationY(-this.robots[0].acc);
         if (cursors.space.isDown) robtob.chassis.setAngularAcceleration(this.robots[0].acc / 2);
+        if (cursors.shift.isDown) robtob.slideTargetPos = robtob.slideWidth / 2;
+        */
+        else robtob.slideTargetPos = 0;
         this.robtob.update();
         for (let i = 0; i < this.junctions.length; i++) this.junctions[i].update(time, delta);
         // for (let i = 0; i < this.robots.length; i++) this.robots[i].update(time, delta);
