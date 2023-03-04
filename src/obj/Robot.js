@@ -10,11 +10,12 @@ import { angledTranslation, inchesToGamePixels } from "../utils";
  * @param {Number} speedCap Maximum velocity of the this
  * @param {Number} mass Mass of the this; used to calculate matter calculations and collision interactions
  */
-export default function Robot (index, game, alliance, cones=0, x=GameDimensions[0]/2, y=GameDimensions[1]/2, width=14, height=14, slideWidth = 48, slideHeight = 7, acc=1000, friction=0.8, speedCap=200, mass=10000) {
+export default function Robot(index, game, alliance, cones = 0, x = GameDimensions[0] / 2, y = GameDimensions[1] / 2, width = 14, height = 14, slideWidth = 48, slideHeight = 7, acc = 1000, friction = 0.8, speedCap = 2000, mass = 10000) {
     this.x = x;
     this.y = y;
     this.cones = cones;
     this.y;
+    this.game = game;
     this.width = inchesToGamePixels(width);
     this.height = inchesToGamePixels(height);
     this.slideWidth = inchesToGamePixels(slideWidth);
@@ -24,16 +25,21 @@ export default function Robot (index, game, alliance, cones=0, x=GameDimensions[
     this.speedCap = speedCap;
     this.mass = mass;
     this.friction = friction;
-    this.slidePos = 0;
-    this.slideTargetPos = 0;
+    this.retractedPos = 10;
+    this.slidePos = this.retractedPos;
+    this.slideTargetPos = this.retractedPos;
     this.slideCollidingWithSomething = false;
-    // this.slide = game.matter.add.sprite(this.x, this.y, 'linearslide');
-    //.setSize(this.slideWidth, this.slideHeight).setDisplaySize(this.slideWidth, this.slideHeight);
+    this.slide = game.matter.add.sprite(this.x, this.y, 'linearslide').setSize(this.slideWidth, this.slideHeight).setDisplaySize(this.slideWidth, this.slideHeight);
     // this.slide.setCollideWorldBounds(true);
     this.chassis = game.matter.add.sprite(this.x, this.y, this.alliance == 'RED' ? 'redlight' : 'bluelight');
+    this.slide.setCollisionGroup(1); // robtob
+    this.chassis.setCollisionGroup(2); // robtob
+    this.slide.setCollidesWith(0); // environment
+    this.chassis.setCollidesWith(0); // environment
     this.chassis.setSize(this.width, this.height);
     this.chassis.setDisplaySize(this.width, this.height);
     this.chassis.setMass(this.mass);
+    // this.chassis.setFrictionAir(this.friction / 100);
     this.chassis.setFriction(this.friction);
     this.chassis.setFrictionStatic(this.friction);
     // this.chassis.setSize(this.width, this.height);
@@ -73,18 +79,22 @@ Robot.prototype.damage = function() {
 }
 
 Robot.prototype.update = function() {
-    /*
     this.slidePos = new Phaser.Math.Vector2(this.slidePos, 0).lerp(new Phaser.Math.Vector2(this.slideTargetPos, 0), 0.05).x;
-    this.slide.setScale(1, 1);
-    this.slide.setOrigin(0.5, 0.5);
+    // this.slide.rotation = this.chassis.rotation - Math.PI / 2;
+    // this.slide.setScale(1, 1);
+    // this.slide.setOrigin(0.5, 0.5);
+    this.slide.setRotation(this.chassis.rotation - Math.PI / 2);
+    this.slide.setSize(this.slidePos / this.slideHeight, this.slidePos * 2);
     this.slide.setDisplaySize(this.slidePos * 2, this.slideHeight);
+    // this.slide.setDisplaySize(this.slideTargetPos, this.slideHeight);
+    // this.slide.setSize(this.slidePos * 2, this.slideHeight);
     // this.slide.setBodySize(this.slide.width, this.slide.height);
-    this.slide.rotation = this.chassis.rotation - Math.PI / 2;
+    // this.slide.setAngularVelocity(this.slidePos - 10);
+    // this.slide.setRotation(this.chassis.rotation - Math.PI / 2);
     this.chassis.setScale(0.3, 0.3);
     let tempCoords = angledTranslation(this.slidePos, this.chassis.x, this.chassis.y, this.slide.rotation);
     this.slide.x = tempCoords[0];
     this.slide.y = tempCoords[1];
-    */
 };
 
 /*
@@ -115,5 +125,4 @@ Robot.prototype.update = function() {
 };
 */
 
-Robot.prototype.setSlideTargetPosition = function(pos) {
-}
+Robot.prototype.setSlideTargetPosition = function(pos) {}

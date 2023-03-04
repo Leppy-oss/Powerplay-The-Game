@@ -144,14 +144,16 @@ export default class HomeScreen extends Phaser.Scene {
         if (cursors.right.isDown) robtob.chassis.applyForce(new Phaser.Math.Vector2(1, 0));
         if (cursors.down.isDown) robtob.chassis.applyForce(new Phaser.Math.Vector2(0, 1));
         if (cursors.up.isDown) robtob.chassis.applyForce(new Phaser.Math.Vector2(0, -1));
+        if (cursors.shift.isDown) robtob.slideTargetPos = robtob.slideWidth / 2;
+        else robtob.slideTargetPos = robtob.retractedPos;
+        if (cursors.space.isDown) robtob.chassis.setAngularVelocity(0.1);
+        else robtob.chassis.setAngularVelocity(0);
         /*
         if (cursors.right.isDown) robtob.chassis.setAccelerationX(this.robots[0].acc);
         if (cursors.down.isDown) robtob.chassis.setAccelerationY(this.robots[0].acc);
         if (cursors.up.isDown) robtob.chassis.setAccelerationY(-this.robots[0].acc);
         if (cursors.space.isDown) robtob.chassis.setAngularAcceleration(this.robots[0].acc / 2);
-        if (cursors.shift.isDown) robtob.slideTargetPos = robtob.slideWidth / 2;
         */
-        else robtob.slideTargetPos = 0;
         this.robtob.update();
         for (let i = 0; i < this.junctions.length; i++) this.junctions[i].update(time, delta);
         // for (let i = 0; i < this.robots.length; i++) this.robots[i].update(time, delta);
