@@ -34,8 +34,8 @@ export default function Robot(index, game, alliance, cones = 0, x = GameDimensio
     this.chassis = game.matter.add.sprite(this.x, this.y, this.alliance == 'RED' ? 'redlight' : 'bluelight');
     this.slide.setCollisionGroup(1); // robtob
     this.chassis.setCollisionGroup(2); // robtob
-    this.slide.setCollidesWith(0); // environment
-    this.chassis.setCollidesWith(0); // environment
+    this.slide.setCollidesWith([0]); // environment
+    this.chassis.setCollidesWith([0]); // environment
     this.chassis.setSize(this.width, this.height);
     this.chassis.setDisplaySize(this.width, this.height);
     this.chassis.setMass(this.mass);
@@ -84,8 +84,12 @@ Robot.prototype.update = function() {
     // this.slide.setScale(1, 1);
     // this.slide.setOrigin(0.5, 0.5);
     this.slide.setRotation(this.chassis.rotation - Math.PI / 2);
-    this.slide.setSize(this.slidePos / this.slideHeight, this.slidePos * 2);
+    // this.slide.setScale(0, 0);
+    // this.slide.setSize(this.slidePos * 2, this.slidePos * 2 / this.slideWidth * this.slideHeight);
     this.slide.setDisplaySize(this.slidePos * 2, this.slideHeight);
+    this.slide.setOrigin(0.5, 0);
+    this.slide.scaleY = 0.01;
+    // this.slide.setScale(0.3, this.slidePos / this.slideWidth)
     // this.slide.setDisplaySize(this.slideTargetPos, this.slideHeight);
     // this.slide.setSize(this.slidePos * 2, this.slideHeight);
     // this.slide.setBodySize(this.slide.width, this.slide.height);
