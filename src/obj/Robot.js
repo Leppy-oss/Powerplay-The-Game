@@ -55,23 +55,6 @@ export default function Robot(index, game, alliance, cones = 0, x = GameDimensio
     this.chassis.setMass(this.mass);
     this.chassis.setAngularDrag(2 * this.friction);
     */
-
-    // game.matter.enable(this.tank, Phaser.matter.Arcade);
-
-    /*
-    this.shadow.anchor.set(0.5);
-    this.tank.anchor.set(0.5);
-    this.turret.anchor.set(0.3, 0.5);
-
-    this.tank.name = index.toString();
-    this.tank.body.immovable = false;
-    this.tank.body.collideWorldBounds = true;
-    this.tank.body.bounce.setTo(1, 1);
-
-    this.tank.angle = game.rnd.angle();
-
-    game.matter.arcade.velocityFromRotation(this.tank.rotation, 100, this.tank.body.velocity);
-    */
 };
 
 Robot.prototype.damage = function() {
@@ -91,33 +74,5 @@ Robot.prototype.update = function() {
     let tempCoords = angledTranslation(this.slidePos, this.chassis.x, this.chassis.y, this.slide.rotation);
     this.slide.setPosition(tempCoords[0], tempCoords[1]);
 };
-
-/*
-Robot.prototype.update = function() {
-    this.slidePos = new Phaser.Math.Vector2(this.slidePos, 0).lerp(new Phaser.Math.Vector2(this.slideTargetPos, 0), 0.05).x;
-    this.slide.setScale(1, 1);
-    this.slide.setOrigin(0.5, 0.5);
-    // this.slide.setSize(this.slidePos * 2, this.slideHeight);
-    // this.slide.body.setSize(this.slidePos * 2, this.slideHeight, false);
-    this.slide.setDisplaySize(this.slidePos * 2, this.slideHeight);
-    this.slide.setBodySize(this.slidePos * 2, this.slideHeight);
-    this.slide.setScale(1, 1);
-    console.log(this.slide.body.width)
-    this.chassis.setScale(0.3, 0.3);
-    let tempCoords = angledTranslation(this.slidePos, this.chassis.x, this.chassis.y, this.slide.rotation);
-    this.slide.x = tempCoords[0];
-    this.slide.y = tempCoords[1];
-    this.slide.rotation = this.chassis.rotation - Math.PI / 2;
-    // console.log(this.slide.body.setSize(this.slidePos * 2, this.slideHeight, false));
-    /*
-    this.shadow.x = this.tank.x;
-    this.shadow.y = this.tank.y;
-    this.shadow.rotation = this.tank.rotation;
-
-    this.turret.x = this.tank.x;
-    this.turret.y = this.tank.y;
-    this.turret.rotation = this.game.matter.arcade.angleBetween(this.tank, this.player);
-};
-*/
 
 Robot.prototype.setSlideTargetPosition = function(pos) {}
