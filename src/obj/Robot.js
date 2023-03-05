@@ -80,25 +80,16 @@ Robot.prototype.damage = function() {
 
 Robot.prototype.update = function() {
     this.slidePos = new Phaser.Math.Vector2(this.slidePos, 0).lerp(new Phaser.Math.Vector2(this.slideTargetPos, 0), 0.05).x;
-    // this.slide.rotation = this.chassis.rotation - Math.PI / 2;
-    // this.slide.setScale(1, 1);
-    // this.slide.setOrigin(0.5, 0.5);
+
+    this.slide.setDisplaySize(this.slidePos * 2, this.slideHeight); // true argument updates the body size
+    this.slide.setBody({
+        width: this.slidePos * 2,
+        height: this.slideHeight,
+        sides: 4
+    });
     this.slide.setRotation(this.chassis.rotation - Math.PI / 2);
-    // this.slide.setScale(0, 0);
-    // this.slide.setSize(this.slidePos * 2, this.slidePos * 2 / this.slideWidth * this.slideHeight);
-    this.slide.setDisplaySize(this.slidePos * 2, this.slideHeight);
-    this.slide.setOrigin(0.5, 0);
-    this.slide.scaleY = 0.01;
-    // this.slide.setScale(0.3, this.slidePos / this.slideWidth)
-    // this.slide.setDisplaySize(this.slideTargetPos, this.slideHeight);
-    // this.slide.setSize(this.slidePos * 2, this.slideHeight);
-    // this.slide.setBodySize(this.slide.width, this.slide.height);
-    // this.slide.setAngularVelocity(this.slidePos - 10);
-    // this.slide.setRotation(this.chassis.rotation - Math.PI / 2);
-    this.chassis.setScale(0.3, 0.3);
     let tempCoords = angledTranslation(this.slidePos, this.chassis.x, this.chassis.y, this.slide.rotation);
-    this.slide.x = tempCoords[0];
-    this.slide.y = tempCoords[1];
+    this.slide.setPosition(tempCoords[0], tempCoords[1]);
 };
 
 /*
