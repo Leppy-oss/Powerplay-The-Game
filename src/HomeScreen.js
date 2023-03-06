@@ -9,14 +9,8 @@ import { inchesToGamePixels, Vector2 } from './utils';
 
 export default class HomeScreen extends Phaser.Scene {
     FIELD_DIMENSION = GameDimensions[0] / 2;
-    speed = 50;
-    junctionBodies;
-    robotBodies;
-    robotIntakeBodies;
-
     junctions = [];
-
-    robots;
+    robots = [];
 
     constructor() {
         super('hello-world');
@@ -61,7 +55,7 @@ export default class HomeScreen extends Phaser.Scene {
         assetText.setOrigin(0.5, 0.5);
 
         this.load.on('progress', function (value) {
-            percentText.setText(parseInt(value * 100) + '%');
+            percentText.setText(Math.round(value * 100) + '%');
             progressBar.clear();
             progressBar.fillStyle(0xffffff, 1);
             progressBar.fillRect((GameDimensions[0] - PROGRESS_BAR_WIDTH + PROGRESS_BAR_PADDING) / 2, (GameDimensions[1] - PROGRESS_BAR_HEIGHT + PROGRESS_BAR_PADDING) / 2, (PROGRESS_BAR_WIDTH - 2 * PROGRESS_BAR_HEIGHT) * value, PROGRESS_BAR_HEIGHT - PROGRESS_BAR_PADDING);
@@ -88,14 +82,13 @@ export default class HomeScreen extends Phaser.Scene {
         this.load.image('linearslide', '/linearSlide.png');
         this.load.image('redcone', './redcone.png');
         this.load.image('bluecone', './bluecone.png');
-        // for (let i = 0; i < 537; i++) this.load.image(randomWords(1)[0], '/8565CL.png');
+        for (let i = 0; i < 200; i++) this.load.image(randomWords(1)[0], '/8565CL.png');
     }
 
     create() {
         this.add.image(this.FIELD_DIMENSION, this.FIELD_DIMENSION, 'sky').setScale(2 * this.FIELD_DIMENSION / 2270, 2 * this.FIELD_DIMENSION / 2270).setAlpha(0.5);
         this.matter.world.setGravity(0, 0);
         this.matter.world.setBounds(0, 0, GameDimensions[0], GameDimensions[1]);
-        const walls = this.matter.world.walls;
         this.junctions = [
             //y value -this.FIELD_DIMENSION * 2.0/3.0
             new Junction(-this.FIELD_DIMENSION * 2.0 / 3.0, -this.FIELD_DIMENSION * 2.0 / 3.0, JunctionType.GROUND, this),
@@ -134,7 +127,8 @@ export default class HomeScreen extends Phaser.Scene {
             junction.updateBody();
         });
         
-        /*
+        /* TODO: cycle out by next commit if not used
+        const walls = this.matter.world.walls;
         walls.top.collisionFilter.category = CATEGORY_ENV;
         walls.top.collisionFilter.mask = [CATEGORY_ROBOT_1, CATEGORY_ROBOT_2, CATEGORY_ROBOT_3, CATEGORY_ROBOT_4];
         walls.bottom.collisionFilter.category = CATEGORY_ENV;
@@ -145,37 +139,37 @@ export default class HomeScreen extends Phaser.Scene {
         walls.right.collisionFilter.mask = [CATEGORY_ROBOT_1, CATEGORY_ROBOT_2, CATEGORY_ROBOT_3, CATEGORY_ROBOT_4];
         */
 
-        this.p1rotL = this.input.keyboard.addKey(65);
-        this.p1rotR = this.input.keyboard.addKey(68);
-        this.p1L = this.input.keyboard.addKey(37);
-        this.p1R = this.input.keyboard.addKey(39);
-        this.p1D = this.input.keyboard.addKey(40);
-        this.p1U = this.input.keyboard.addKey(38);
-        this.p1S = this.input.keyboard.addKey(16);
+        this.p1rotL = this.input.keyboard.addKey(82); // r
+        this.p1rotR = this.input.keyboard.addKey(84); // t
+        this.p1L = this.input.keyboard.addKey(65); // a
+        this.p1R = this.input.keyboard.addKey(68); // d
+        this.p1D = this.input.keyboard.addKey(83); // s
+        this.p1U = this.input.keyboard.addKey(87); // w
+        this.p1S = this.input.keyboard.addKey(89); // y
 
-        this.p2rotL = this.input.keyboard.addKey(65);
-        this.p2rotR = this.input.keyboard.addKey(68);
-        this.p2L = this.input.keyboard.addKey(37);
-        this.p2R = this.input.keyboard.addKey(39);
-        this.p2D = this.input.keyboard.addKey(40);
-        this.p2U = this.input.keyboard.addKey(38);
-        this.p2S = this.input.keyboard.addKey(16);
+        this.p2rotL = this.input.keyboard.addKey(188); // comma
+        this.p2rotR = this.input.keyboard.addKey(190); // period
+        this.p2L = this.input.keyboard.addKey(37); // left
+        this.p2R = this.input.keyboard.addKey(39); // right
+        this.p2D = this.input.keyboard.addKey(40); // down
+        this.p2U = this.input.keyboard.addKey(38); // up
+        this.p2S = this.input.keyboard.addKey(191); // slash
 
-        this.p3rotL = this.input.keyboard.addKey(65);
-        this.p3rotR = this.input.keyboard.addKey(68);
-        this.p3L = this.input.keyboard.addKey(37);
-        this.p3R = this.input.keyboard.addKey(39);
-        this.p3D = this.input.keyboard.addKey(40);
-        this.p3U = this.input.keyboard.addKey(38);
-        this.p3S = this.input.keyboard.addKey(16);
+        this.p3rotL = this.input.keyboard.addKey(90); // z 
+        this.p3rotR = this.input.keyboard.addKey(88); // x
+        this.p3L = this.input.keyboard.addKey(67); // c
+        this.p3R = this.input.keyboard.addKey(66); // b
+        this.p3D = this.input.keyboard.addKey(86); // v
+        this.p3U = this.input.keyboard.addKey(71); // g
+        this.p3S = this.input.keyboard.addKey(16); // shift
 
-        this.p4rotL = this.input.keyboard.addKey(65);
-        this.p4rotR = this.input.keyboard.addKey(68);
-        this.p4L = this.input.keyboard.addKey(37);
-        this.p4R = this.input.keyboard.addKey(39);
-        this.p4D = this.input.keyboard.addKey(40);
-        this.p4U = this.input.keyboard.addKey(38);
-        this.p4S = this.input.keyboard.addKey(16);
+        this.p4rotL = this.input.keyboard.addKey(73); // i
+        this.p4rotR = this.input.keyboard.addKey(79); // o
+        this.p4L = this.input.keyboard.addKey(72); // h
+        this.p4R = this.input.keyboard.addKey(75); // k
+        this.p4D = this.input.keyboard.addKey(74); // j
+        this.p4U = this.input.keyboard.addKey(85); // u
+        this.p4S = this.input.keyboard.addKey(80); // p
 
         this.spawnKey = this.input.keyboard.addKey(32); // space
 
@@ -189,20 +183,7 @@ export default class HomeScreen extends Phaser.Scene {
         const redParticles = this.add.particles('red');
         const blueParticles = this.add.particles('blue');
 
-        // const logo = this.matter.add.image(this.FIELD_DIMENSION, this.FIELD_DIMENSION / 3, 'logo').setScale(0.5, 0.5);
-        // let logoScl = 2;
-        // let junctionScale = 0.1;
-        // this.junctionBodies = this.physics.add.staticGroup();
-        // this.robotBodies = this.physics.add.group();
-        // this.robotIntakeBodies = this.physics.add.group();
-        // this.junctionBodies.enableBody = true;
-        // this.physics.add.staticGroup();
-
-        /*
-        logo.setVelocity(100 * logoScl, 200 * logoScl);
-        logo.setBounce(1, 1);
-        logo.setCollideWorldBounds(true);
-        */
+        // const logo = this.add.image(this.FIELD_DIMENSION, this.FIELD_DIMENSION / 3, 'logo').setScale(0.5, 0.5);
 
         this.robots.forEach(robot => {
             const emitter = (robot.alliance == 'BLUE' ? redParticles : blueParticles).createEmitter({

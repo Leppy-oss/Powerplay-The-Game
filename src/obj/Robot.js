@@ -28,7 +28,7 @@ import { angledTranslation, inchesToGamePixels, Vector2 } from "../utils";
  * @param {Number} speedCap Maximum velocity of the this
  * @param {Number} mass Mass of the this; used to calculate matter calculations and collision interactions
  */
-export default function Robot(index, game, alliance, left, right, down, up, rotL, rotR, slideOut, cones = 0, x = GameDimensions[0] / 2, y = GameDimensions[1] / 2, theta=0, width = 14, height = 14, slideWidth = 52, slideHeight = 7, acc = 1000, angularAcc = 2.5, friction = 0.8, speedCap = 2000, mass = 200) {
+export default function Robot(index, game, alliance, left, right, down, up, rotL, rotR, slideOut, cones = 0, x = GameDimensions[0] / 2, y = GameDimensions[1] / 2, theta=0, width = 14, height = 14, slideWidth = 52, slideHeight = 7, acc = 1000, angularAcc = 1.5, friction = 0.8, speedCap = 2000, mass = 200) {
     this.x = x;
     this.y = y;
     this.cones = cones;
