@@ -1,42 +1,31 @@
-import { JunctionType } from "./JunctionType";
+import { CONE_DIAM } from "../HomeScreen";
+import { inchesToGamePixels } from "../utils";
 
-export default class Junction {
-    x = 0;
-    y = 0;
-    color;
-    phaserObject;
+/**
+ * @param {Number} x X-coord of the cone upon creation
+ * @param {Number} y Y-coord of the cone upon creation
+ * @param {String} color The color of the cone, either 'RED' or 'BLUE'
+ * @param {Phaser.Scene} game The scene to create the cone in
+ */
+export default function Cone(x, y, color, game, shouldBeStatic=false) {
+    this.x = x;
+    this.y = y;
+    this.color = color;
+    this.game = game;
+    this.body = this.game.matter.bodies.circle(this.x, this.y, inchesToGamePixels(CONE_DIAM) / 2, { angle: (Math.random() - 0.5) * 4 * Math.PI, isStatic: shouldBeStatic });
+    this.cone = this.game.matter.add.image(this.x, this.y, this.color == 'RED' ? 'redcone' : 'bluecone').setDisplaySize(inchesToGamePixels(CONE_DIAM), inchesToGamePixels(CONE_DIAM));
+    this.cone.rotation = this.body.angle;
+    this.cone.setExistingBody(this.body);
+    this.cone.setOrigin(0.5, 0.5);
+}
 
-    constructor(cones, x, y, color) {
-        this.cones = cones;
-        this.x = x;
-        this.y = y;
-        this.color = color;
-    }
+Cone.prototype.refreshBody = function() {
+    this.body = this.game.matter.bodies.circle(this.x, this.y, inchesToGamePixels(CONE_DIAM), { angle: this.cone.angle } );
+    this.cone.rotation = this.body.angle;
+    this.cone.setExistingBody(this.body);
+    this.cone.setOrigin(0.5, 0.5);
+}
 
-    setType(type) {
-        this.type = type;
-    }
-
-    setPhaserObject(phaserObject) {
-        this.phaserObject = phaserObject;
-    }
-
-    addCone() {
-        this.cones++;
-    }
-
-    addCones(cones) {
-        this.cones += cones;
-    }
-
-    removeCone() {
-        this.cones--;
-    }
-
-    removeCones(cones) {
-        this.cones -= cones;
-    }
-
-    update(time, delta) {
-    }
+Cone.prototype.update = function() {
+    this.refreshBody();
 }
