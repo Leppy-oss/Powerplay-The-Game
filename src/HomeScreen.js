@@ -66,6 +66,17 @@ export default class HomeScreen extends Phaser.Scene {
         this.add.image(this.FIELD_DIMENSION, this.FIELD_DIMENSION, 'sky').setScale(2 * this.FIELD_DIMENSION / 2270, 2 * this.FIELD_DIMENSION / 2270).setAlpha(0.5);
         this.matter.world.setGravity(0, 0);
         this.matter.world.setBounds(0, 0, GameDimensions[0], GameDimensions[1]);
+        const walls = this.matter.world.walls;
+        /*
+        walls.top.collisionFilter.category = CATEGORY_ENV;
+        walls.top.collisionFilter.mask = [CATEGORY_ROBOT_1, CATEGORY_ROBOT_2, CATEGORY_ROBOT_3, CATEGORY_ROBOT_4];
+        walls.bottom.collisionFilter.category = CATEGORY_ENV;
+        walls.bottom.collisionFilter.mask = [CATEGORY_ROBOT_1, CATEGORY_ROBOT_2, CATEGORY_ROBOT_3, CATEGORY_ROBOT_4];
+        walls.left.collisionFilter.category = CATEGORY_ENV;
+        walls.left.collisionFilter.mask = [CATEGORY_ROBOT_1, CATEGORY_ROBOT_2, CATEGORY_ROBOT_3, CATEGORY_ROBOT_4];
+        walls.right.collisionFilter.category = CATEGORY_ENV;
+        walls.right.collisionFilter.mask = [CATEGORY_ROBOT_1, CATEGORY_ROBOT_2, CATEGORY_ROBOT_3, CATEGORY_ROBOT_4];
+        */
         /*
         this.robots = [
             new Bobot(0, this.FIELD_DIMENSION / 2, this.FIELD_DIMENSION / 6, 12, 12, "BLUE"),
@@ -133,11 +144,14 @@ export default class HomeScreen extends Phaser.Scene {
 
         // logo.setDepth(1);
         this.robtob = new Robot(0, this, 'RED');
+        this.a = this.input.keyboard.addKey(65);
+        this.d = this.input.keyboard.addKey(68);
     }
 
     update(time, delta) {
         let cursors = this.input.keyboard.createCursorKeys();
         let robtob = this.robtob;
+        this.robtob.update();
         // robtob.chassis.setAcceleration(0, 0);
         // robtob.chassis.setAngularAcceleration(0);
         if (cursors.left.isDown) robtob.chassis.applyForce(new Phaser.Math.Vector2(-1, 0));
@@ -146,18 +160,24 @@ export default class HomeScreen extends Phaser.Scene {
         if (cursors.up.isDown) robtob.chassis.applyForce(new Phaser.Math.Vector2(0, -1));
         if (cursors.shift.isDown) robtob.slideTargetPos = robtob.slideWidth / 2;
         else robtob.slideTargetPos = robtob.retractedPos;
-        if (cursors.space.isDown) robtob.chassis.setAngularVelocity(0.1);
-        else robtob.chassis.setAngularVelocity(0);
+        let angVelo = 0;
+        if (this.a.isDown) angVelo -= 0.05;
+        if (this.d.isDown) angVelo += 0.05;
+        robtob.chassis.setAngularVelocity(angVelo);
         /*
         if (cursors.right.isDown) robtob.chassis.setAccelerationX(this.robots[0].acc);
         if (cursors.down.isDown) robtob.chassis.setAccelerationY(this.robots[0].acc);
         if (cursors.up.isDown) robtob.chassis.setAccelerationY(-this.robots[0].acc);
         if (cursors.space.isDown) robtob.chassis.setAngularAcceleration(this.robots[0].acc / 2);
         */
-        this.robtob.update();
         for (let i = 0; i < this.junctions.length; i++) this.junctions[i].update(time, delta);
         // for (let i = 0; i < this.robots.length; i++) this.robots[i].update(time, delta);
     }
 }
 
-export var GameDimensions = [600, 600];
+export const GameDimensions = [600, 600];
+export const CATEGORY_ROBOT_1 = 0;
+export const CATEGORY_ROBOT_2 = 1;
+export const CATEGORY_ROBOT_3 = 2;
+export const CATEGORY_ROBOT_4 = 3;
+export const CATEGORY_ENV = 44;
