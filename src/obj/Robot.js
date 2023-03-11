@@ -28,7 +28,7 @@ import { angledTranslation, inchesToGamePixels, Vector2 } from "../utils";
  * @param {Number} speedCap Maximum velocity of the this
  * @param {Number} mass Mass of the this; used to calculate matter calculations and collision interactions
  */
-export default function Robot(index, game, alliance, left, right, down, up, rotL, rotR, slideOut, cones = 0, x = GameDimensions[0] / 2, y = GameDimensions[1] / 2, theta=0, width = 14, height = 14, slideWidth = 52, slideHeight = 7, acc = 1000, angularAcc = 1.5, friction = 0.8, speedCap = 2000, mass = 200) {
+export default function Robot(index, game, alliance, left, right, down, up, rotL, rotR, slideOut, cones = 0, x = GameDimensions[0] / 2, y = GameDimensions[1] / 2, theta = 0, width = 14, height = 14, slideWidth = 52, slideHeight = 7, acc = 1000, angularAcc = 5, friction = 0.5, speedCap = 2000, mass = 50) {
     this.x = x;
     this.y = y;
     this.cones = cones;
@@ -58,7 +58,7 @@ export default function Robot(index, game, alliance, left, right, down, up, rotL
 
     this.slide = this.game.add.image(this.x, this.y + 200, 'linearslide').setSize(this.slideWidth, this.slideHeight).setDisplaySize(this.slideWidth, this.slideHeight);
     this.chassis = this.game.matter.add.sprite(this.x, this.y, this.alliance == 'RED' ? 'redlight' : 'bluelight');
-    this.chassis.setDepth(1e9);
+    this.chassis.setDepth(1e9 - index);
     // this.chassis.setCollisionCategory(CATEGORY_ROBOT_1); // robtob
     // this.chassis.setCollidesWith([CATEGORY_ENV]); // environment
 
@@ -70,14 +70,14 @@ export default function Robot(index, game, alliance, left, right, down, up, rotL
     this.chassis.setRotation(theta);
 
     this.omega = 0; // ang vel
-    this.omegaMax = this.speedCap / 100;
+    this.omegaMax = this.speedCap / 10;
     this.alpha = 0; // ang acc
 
     this.slidePos = new Vector2(this.slidePos, 0).lerp(new Vector2(this.slideTargetPos, 0), 0.1).x;
     var prevRot = this.chassis.rotation;
     var chassisBody = this.game.matter.add.rectangle(this.chassis.x, this.chassis.y, this.width, this.height, { angle: prevRot });
     let tempCoords = angledTranslation(this.slidePos, this.chassis.x, this.chassis.y, prevRot - Math.PI / 2);
-    var slideBody = this.game.matter.add.rectangle(tempCoords[0], tempCoords[1], this.slidePos * 2, this.slideHeight, { angle: prevRot - Math.PI / 2});
+    var slideBody = this.game.matter.add.rectangle(tempCoords[0], tempCoords[1], this.slidePos * 2, this.slideHeight, { angle: prevRot - Math.PI / 2 });
     slideBody.position.x = this.chassis.x;
     slideBody.position.y = this.chassis.y;
 
@@ -95,7 +95,6 @@ export default function Robot(index, game, alliance, left, right, down, up, rotL
 };
 
 Robot.prototype.updateControls = function(time, delta) {
-    let angForce = 0;
     let tau = 0;
     if (this.rotL.isDown) tau -= this.angularAcc;
     if (this.rotR.isDown) tau += this.angularAcc;
@@ -139,6 +138,8 @@ Robot.prototype.update = function(time, delta) {
 
     this.chassis.setExistingBody(compoundBody);
     this.chassis.setOrigin(0.5, 0.5);
+    this.chassis.setFrictionAir(this.friction / 10);
+    this.chassis.setFriction(this.friction);
     this.chassis.setMass(this.mass);
 
     this.slide.setDisplaySize(this.slidePos * 2, this.slideHeight); // true argument updates the body size
@@ -146,6 +147,7 @@ Robot.prototype.update = function(time, delta) {
     this.slide.setPosition(tempCoords[0], tempCoords[1]);
     if (this.omega < this.omegaMax) this.omega += this.alpha * delta / 1000;
     this.omega *= this.friction;
+    console.log(this.omega);
     this.chassis.setAngularVelocity(this.omega);
 };
 

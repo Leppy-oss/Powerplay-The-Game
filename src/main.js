@@ -2,7 +2,6 @@ import Phaser from 'phaser'
 
 import HomeScreen from './HomeScreen'
 import { GameDimensions } from './HomeScreen'
-import express from 'express';
 
 const config = {
     type: Phaser.AUTO,
@@ -12,7 +11,7 @@ const config = {
     physics: {
         default: 'matter',
         matter: {
-            debug: true,
+            debug: false,
         },
     },
     scene: [HomeScreen],

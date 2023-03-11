@@ -54,16 +54,16 @@ export default class HomeScreen extends Phaser.Scene {
         });
         assetText.setOrigin(0.5, 0.5);
 
-        this.load.on('progress', function (value) {
+        this.load.on('progress', function(value) {
             percentText.setText(Math.round(value * 100) + '%');
             progressBar.clear();
             progressBar.fillStyle(0xffffff, 1);
             progressBar.fillRect((GameDimensions[0] - PROGRESS_BAR_WIDTH + PROGRESS_BAR_PADDING) / 2, (GameDimensions[1] - PROGRESS_BAR_HEIGHT + PROGRESS_BAR_PADDING) / 2, (PROGRESS_BAR_WIDTH - 2 * PROGRESS_BAR_HEIGHT) * value, PROGRESS_BAR_HEIGHT - PROGRESS_BAR_PADDING);
         });
-        this.load.on('fileprogress', function (file) {
+        this.load.on('fileprogress', function(file) {
             assetText.setText('Loading asset: ' + file.key);
         });
-        this.load.on('complete', function () {
+        this.load.on('complete', function() {
             console.log('Finished loading assets');
             progressBar.destroy();
             progressBox.destroy();
@@ -126,26 +126,14 @@ export default class HomeScreen extends Phaser.Scene {
             junction.y += this.FIELD_DIMENSION;
             junction.updateBody();
         });
-        
-        /* TODO: cycle out by next commit if not used
-        const walls = this.matter.world.walls;
-        walls.top.collisionFilter.category = CATEGORY_ENV;
-        walls.top.collisionFilter.mask = [CATEGORY_ROBOT_1, CATEGORY_ROBOT_2, CATEGORY_ROBOT_3, CATEGORY_ROBOT_4];
-        walls.bottom.collisionFilter.category = CATEGORY_ENV;
-        walls.bottom.collisionFilter.mask = [CATEGORY_ROBOT_1, CATEGORY_ROBOT_2, CATEGORY_ROBOT_3, CATEGORY_ROBOT_4];
-        walls.left.collisionFilter.category = CATEGORY_ENV;
-        walls.left.collisionFilter.mask = [CATEGORY_ROBOT_1, CATEGORY_ROBOT_2, CATEGORY_ROBOT_3, CATEGORY_ROBOT_4];
-        walls.right.collisionFilter.category = CATEGORY_ENV;
-        walls.right.collisionFilter.mask = [CATEGORY_ROBOT_1, CATEGORY_ROBOT_2, CATEGORY_ROBOT_3, CATEGORY_ROBOT_4];
-        */
 
-        this.p1rotL = this.input.keyboard.addKey(82); // r
-        this.p1rotR = this.input.keyboard.addKey(84); // t
-        this.p1L = this.input.keyboard.addKey(65); // a
-        this.p1R = this.input.keyboard.addKey(68); // d
-        this.p1D = this.input.keyboard.addKey(83); // s
-        this.p1U = this.input.keyboard.addKey(87); // w
-        this.p1S = this.input.keyboard.addKey(89); // y
+        this.p1rotL = this.input.keyboard.addKey(65); // r - 82
+        this.p1rotR = this.input.keyboard.addKey(68); // t - 84
+        this.p1L = this.input.keyboard.addKey(37); // a - 65
+        this.p1R = this.input.keyboard.addKey(39); // d - 68
+        this.p1D = this.input.keyboard.addKey(40); // s - 83
+        this.p1U = this.input.keyboard.addKey(38); // w - 87
+        this.p1S = this.input.keyboard.addKey(16); // y - 89
 
         this.p2rotL = this.input.keyboard.addKey(188); // comma
         this.p2rotR = this.input.keyboard.addKey(190); // period
@@ -183,7 +171,7 @@ export default class HomeScreen extends Phaser.Scene {
         const redParticles = this.add.particles('red');
         const blueParticles = this.add.particles('blue');
 
-        // const logo = this.add.image(this.FIELD_DIMENSION, this.FIELD_DIMENSION / 3, 'logo').setScale(0.5, 0.5);
+        const logo = this.add.image(this.FIELD_DIMENSION, this.FIELD_DIMENSION / 3, 'logo').setScale(0.5, 0.5);
 
         this.robots.forEach(robot => {
             const emitter = (robot.alliance == 'BLUE' ? redParticles : blueParticles).createEmitter({
@@ -201,9 +189,9 @@ export default class HomeScreen extends Phaser.Scene {
         this.robots.forEach(robtob => {
             robtob.update(time, delta);
             robtob.updateControls(time, delta);
-        })
+        });
 
-        if (this.input.keyboard.checkDown(this.spawnKey, 100)) new Cone(GameDimensions[0] / 2, inchesToGamePixels(12), 'BLUE', this);
+        if (this.input.keyboard.checkDown(this.spawnKey, 0)) new Cone(GameDimensions[0] / 2, inchesToGamePixels(12), 'BLUE', this);
         for (let i = 0; i < this.junctions.length; i++) this.junctions[i].update();
         // for (let i = 0; i < this.robots.length; i++) this.robots[i].update(time, delta);
     }
